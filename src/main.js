@@ -5,7 +5,9 @@ import App from './App'
 import Navbar from './components/Navbar'
 import Web3 from 'web3'
 import router from './router'
-// import axios from 'axios'
+import JWT from 'jsonwebtoken'
+import Store from '@/js/store'
+
 Vue.config.productionTip = false
 
 window.addEventListener('load', function () {
@@ -18,17 +20,21 @@ window.addEventListener('load', function () {
     window.web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
   }
 
+  const token = localStorage.getItem('user')
+  if (token) {
+    JWT.verify(JSON.parse(token), 'important', (err, decode) => {
+      if (err) {
+        Store.state.username = null
+      } else Store.state.username = decode.username
+    })
+  }
+
   /* eslint-disable no-new */
   new Vue({
     el: '#app',
     router,
     template: '<App/>',
-    components: { App },
-    data () {
-      return {
-        message: 'deneme'
-      }
-    }
+    components: { App }
   })
   new Vue({
     el: '#header',

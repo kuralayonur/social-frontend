@@ -21,6 +21,15 @@ ul{
   #ethHelp{
     display: none;
   }
+  #unwHelp{
+    display: none;
+  }
+  #e2Help{
+    display: none;
+  }
+  #eHelp{
+    display: none;
+  }
   .margin-top{
     margin-top: 90px;
   }
