@@ -1,6 +1,6 @@
 <template>
   <div id='post'>
-    <form>
+    <form v-if="first">
       <div class='form-group'>
         <label for='exampleFormControlInput1'>Title</label>
         <input class='form-control' id='exampleFormControlInput1' type='text' placeholder='Title'>
@@ -18,6 +18,12 @@
         <button class='btn btn-success mt-1' @click='postIt'>Post</button>
       </div>
     </form>
+    <div class="alert alert-success" role="alert" v-if="success">
+      This is a success alert—check it out!
+    </div>
+    <div class="alert alert-danger" role="alert" v-if="failed">
+      This is a success alert—check it out!
+    </div>
   </div>
 </template>
 
@@ -25,20 +31,11 @@
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import Ipfs from '@/js/ipfs'
 import buffer from 'buffer'
-import Vue from 'vue'
-import Vuex from 'vuex'
-import async from 'q'
-import store from '@/js/store'
+import Store from '@/js/store'
 import Axios from 'axios'
 
-Vue.use(async)
-
-const bufferVuex = new Vuex.Store({
-  state: {
-    imgBuffer: null
-  }
-})
-// const title = document.getElementById('exampleFormControlInput1')
+let title
+let imgBuffer = null
 export default {
   name: 'post',
   data () {
@@ -48,32 +45,46 @@ export default {
       editorConfig: {
         // The configuration of the editor.
       },
-      isLoading: true
+      isLoading: true,
+      success: false,
+      failed: false,
+      first: true
     }
+  },
+  mounted () {
+    title = document.getElementById('exampleFormControlInput1')
   },
   methods: {
     postIt: async function (e) {
       e.preventDefault()
       let imgHash
       let postHash
-      if (store.state.imgBuffer == null || this.editorData == null) {
+      if (imgBuffer == null || this.editorData == null) {
         alert('Tüm alanları doldurmak zorunludur!')
       } else {
-        store.state.loading = true
-        await Ipfs.add(buffer.Buffer(this.editorData), (err, hash) => {
+        Ipfs.add(imgBuffer, (err, hash) => {
           if (err) throw err
-          else postHash = hash
-        })
-        await Ipfs.add(bufferVuex.state.imgBuffer, (err, hash) => {
-          if (err) throw err
-          else imgHash = hash
-        })
-        Axios.post(`localhost:3000/posts/${store.state.username}/${postHash}/${imgHash}`)
-        .then(response => {
-          const data = response.data
-          if (data.status) {
-            alert('Yükeleme Başarılı')
-          } else alert('Bir şeyler yanlış gitti')
+          else {
+            imgHash = hash[0].hash
+            console.log('img' + imgHash)
+            Ipfs.add(buffer.Buffer(this.editorData), (err, hash) => {
+              if (err) throw err
+              else {
+                postHash = hash[0].hash
+                console.log(postHash)
+                let titleValue = title.value
+                Axios.post(`http://192.168.1.24:3000/posts/${Store.state.username}/${postHash}/${imgHash}/${titleValue}`)
+                .then(response => {
+                  const data = response.data
+                  if (data.status) {
+                    window.location.href = 'http://192.168.1.24:8080/'
+                  } else {
+                    alert('Ups something went wrong!')
+                  }
+                })
+              }
+            })
+          }
         })
       }
     },
@@ -82,8 +93,8 @@ export default {
       const image = document.getElementById('exampleFormControlFile1')
       reader.readAsArrayBuffer(image.files[0])
       reader.onloadend = async function () {
-        store.state.imgBuffer = buffer.Buffer(reader.result)
-        console.log(bufferVuex.state.imgBuffer)
+        imgBuffer = buffer.Buffer(reader.result)
+        console.log(imgBuffer)
       }
     }
   }

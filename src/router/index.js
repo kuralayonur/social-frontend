@@ -4,6 +4,7 @@ import Router from 'vue-router'
 // import Signup from '@/components/Signup'
 import Index from '@/components/Index'
 import Login from '@/components/Login'
+import PostDetail from '@/components/PostDetail'
 import Register from '@/components/Register'
 import Post from '@/components/Post'
 import Ckeditor from '@ckeditor/ckeditor5-vue'
@@ -44,6 +45,11 @@ export default new Router({
       path: '/post',
       name: 'post',
       component: Post
+    },
+    {
+      path: '/postdetail/:id',
+      name: 'postdetail',
+      component: PostDetail
     }
   ]
 })

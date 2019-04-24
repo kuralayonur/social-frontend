@@ -4,29 +4,28 @@
       <li class="mt-5" v-for="item in data">
         <div class="postDetail">
           <div class="postHead">
-            <a href class="btn">
-              <img src="../assets/logo.png" id="senderPic" class="rounded-circle" alt="upvote">
+            <a v-bind:href="item.id" class="btn">
+              <img id="senderPic" class="rounded-circle" alt="upvote" src="../assets/logo.png">
             </a>
-            <a href class="btn" role="button">
+            <a v-bind:href="item.id" class="btn" role="button">
               <span class="stronFont">{{item.user_name}}</span>
             </a>
-            <a href class="btn" role="button">
+            <!-- <a href class="btn" role="button">
               <span class="stronFont">{{item.time_stamp}}</span>
-            </a>
+            </a> -->
           </div>
           <div class="postContent d-flex">
             <div class="postContentPicture">
-              <a href class="btn">
-                <img id="postİmg" src="../assets/logo.png" alt>
+              <a v-bind:href="item.id" class="btn">
+                <img id="postImg" v-bind:src="item.image_ipfs" alt>
               </a>
             </div>
             <div class="postContentText">
               <h5>
-                <a href class="text-secondary font-weight-bold">{{item.title}}</a>
+                <a v-bind:href="item.id" class="text-secondary font-weight-bold">{{item.title}}</a>
               </h5>
               <div class="postContentEntry">
-                  <a href="" class="text-secondary"> | What is the blockchain good for to the average guy? Yes, you can pay
-                      | without using banks as an intermediary. But…</a>                    
+                  <a v-bind:href="item.id" class="text-secondary" v-html="item.ipfs_hash">{{item.ipfs_hash}}</a>                    
               </div>
               <div class="postContentFooter d-flex">
                   <div class="vote">
@@ -47,15 +46,43 @@
 
 <script>
 import axios from 'axios'
+import ipfs from '@/js/ipfs'
 export default {
   name: 'home',
   data () {
     return {
-      data: null
+      data: null,
+      link: []
     }
   },
   mounted () {
-    axios.get('http://172.20.10.3:3000/posts').then(response => { this.data = response.data })
+    axios.get('http://192.168.1.24:3000/posts').then(response => {
+      // this.data = response.data
+      response.data.forEach((element, index) => {
+        ipfs.cat(element.ipfs_hash, (err, file) => {
+          if (err) {
+            throw err
+          }
+          const date = new Date()
+          const oldDate = new Date(element.time_stamp)
+          response.data[index].ipfs_hash = file.toString('utf8').substring(0, 50)
+          response.data[index].time_stamp = (date.getDate() + 1) - oldDate.getDate()
+          console.log(element.id)
+          response.data[index].id = 'http://localhost:8080/#/postdetail/' + element._id
+          // let newAdress = 'https://ipfs.io/ipfs/' + element.image_ipfs
+          ipfs.cat(element.image_ipfs, (err, file) => {
+            if (err) {
+              throw err
+            }
+            let blob = new Blob([file], {type: 'image/jpg'})
+            let urlCreator = window.URL || window.webkitUrl
+            let imgUrl = urlCreator.createObjectURL(blob)
+            response.data[index].image_ipfs = imgUrl
+          })
+        })
+      })
+      this.data = response.data
+    })
   }
 }
 </script>

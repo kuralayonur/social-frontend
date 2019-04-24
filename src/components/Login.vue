@@ -58,13 +58,13 @@ export default {
       const password = document.getElementById('pwd1')
       return axios
         .get(
-          `http://172.20.10.3:3000/users/${username.value}/${password.value}`
+          `http://192.168.1.24:3000/users/${username.value}/${password.value}`
         )
         .then(response => {
           this.data = response.data
           if (this.data.status) {
             localStorage.setItem('user', JSON.stringify(this.data.token))
-            window.location.href = 'http://localhost:8080/'
+            window.location.href = 'http://192.168.1.24:8080/'
           } else alert(this.data.message)
         }).catch(err => {
           if (err) {

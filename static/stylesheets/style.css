@@ -1,7 +1,7 @@
 ul{
     list-style-type: none;
   }
-  #postİmg{
+  #postImg{
     height: 75px;
     width: 100px;
   }
@@ -32,4 +32,8 @@ ul{
   }
   .margin-top{
     margin-top: 90px;
+  }
+  #detailImg{
+    height: 640;
+    width: 320;
   }

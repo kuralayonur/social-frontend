@@ -26,6 +26,7 @@
                       type="text"
                       name="uname1"
                       required
+                      v-model='uname'
                     >
                     <small
                       class="text-danger form-text"
@@ -81,6 +82,7 @@
                       id="ethwallet"
                       type="text"
                       required
+                      v-model='ether'
                     >
                     <small class="text-danger form-text" id="ethHelp">Ether Account is Invalid!</small>
                   </div>
@@ -88,6 +90,7 @@
                     class="btn btn-success btn-lg float-right"
                     id="btnLogin"
                     type="button"
+                    @click='userRegister'
                   >Register</button>
                 </form>
               </div>
@@ -100,7 +103,52 @@
 </template>
 
 <script>
+import Web3 from 'web3'
+// import Axios from 'axios'
+const uname1 = document.getElementById('uname1')
+const pwd1 = document.getElementById('pwd1')
+const email = document.getElementById('email')
+const etherwallet = document.getElementById('ethwallet')
+let wallet = ''
+let userName = ''
+let password = ''
+let emailD = ''
 export default {
-  name: 'register'
+  name: 'register',
+  data () {
+    return {
+      ether: '',
+      uname: ''
+    }
+  },
+  methods: {
+    userRegister: (e) => {
+      e.preventDefault()
+      // const web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/e4fa3509d85d43db9435d70e9fa8fb1c'))
+      const web3 = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'))
+      try {
+        alert(this.ether)
+        wallet = etherwallet.value
+        userName = uname1.value
+        password = pwd1.value
+        emailD = email.value
+        let balance = web3.eth.getBalance(wallet)
+        console.log(web3.toDecimal(balance))
+      } catch (e) {
+        console.log(e)
+      }
+      console.log(wallet)
+      console.log(userName)
+      console.log(password)
+      console.log(emailD)
+      // Axios.post(`http://192.168.1.24:3000/users/${uname1.value}/${pwd1.value}/${email.value}/${etherwallet.value}`)
+      // .then(response => {
+      //   let data = response.data
+      //   if (data) {
+      //     window.location.href = 'http://192.168.1.24:8080/'
+      //   } else alert('Registration Failed!')
+      // })
+    }
+  }
 }
 </script>

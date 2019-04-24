@@ -7,7 +7,7 @@
             <a href='/#/' class='nav-link'>Social</a>
           </li>
         </ul>
-        <div class='.mx-auto order-0 ml-auto'>
+        <div class=''>
           <ul class='navbar-nav'>
             <li class='nav-item active'>
               <a href='#' class='nav-link'>Trending</a>
@@ -37,6 +37,8 @@
           </button>
           <div class="dropdown-menu mt-1">
             <a class='dropdown-item' @click="logOut">My Profile</a>
+            <a class='dropdown-item' @click="logOut">My Posts</a>
+            <a class='dropdown-item' @click="logOut">Log Out</a>
           </div>
         </div>
       </div>
@@ -56,6 +58,7 @@ export default {
   methods: {
     logOut: (e) => {
       localStorage.removeItem('user')
+      location.reload()
     }
   }
 }
