@@ -1,8 +1,7 @@
 <template>
-  <div id="app" class="container margin-top">
+  <div id="app" class="">
     <hr>
     <router-view></router-view>
-    <router-link to="/"></router-link>
   </div>
 </template>
 

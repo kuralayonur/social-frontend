@@ -7,17 +7,15 @@
             <a href='/#/' class='nav-link'>Social</a>
           </li>
         </ul>
-        <div class=''>
+        <div class='ml-auto' v-if="username">
           <ul class='navbar-nav'>
-            <li class='nav-item active'>
-              <a href='#' class='nav-link'>Trending</a>
+            <li v-if='username' class='nav-item active'>
+              <a href='/#/post' class='nav-link'>Post</a>
             </li>
-            <li class='nav-item active'>
-              <a href='#' class='nav-link'>Hot</a>
-            </li>
-            <li class='nav-item active'>
-              <a href='#' class='nav-link'>New</a>
-            </li>
+          </ul>
+        </div>
+        <div class='' v-if="!username">
+          <ul class='navbar-nav'>
             <li v-if='username' class='nav-item active'>
               <a href='/#/post' class='nav-link'>Post</a>
             </li>
@@ -25,19 +23,18 @@
         </div>
         <ul class='navbar-nav ml-auto'>
           <li v-if='!username' class='nav-item active'>
-            <a href='/#/login' class='nav-link'>Login</a>
+            <a href='/#/login' class='nav-link'>Giriş Yap</a>
           </li>
           <li v-if='!username' class='nav-item active'>
-            <a href='/#/register' class='nav-link'>Register</a>
+            <a href='/#/confirmether' class='nav-link'>Kayıt</a>
           </li>
         </ul>
-        <div class="btn-group dropleft ml-auto" v-if="username">
+        <div class="navbar-nav btn-group dropleft ml-auto" v-if="username">
           <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             {{username}}
           </button>
           <div class="dropdown-menu mt-1">
-            <a class='dropdown-item' @click="logOut">My Profile</a>
-            <a class='dropdown-item' @click="logOut">My Posts</a>
+            <a class='dropdown-item' >Edit Posts</a>
             <a class='dropdown-item' @click="logOut">Log Out</a>
           </div>
         </div>
@@ -47,7 +44,6 @@
 </template>
 <script>
 import Store from '@/js/store'
-
 export default {
   name: 'header',
   data () {

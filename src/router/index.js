@@ -7,8 +7,14 @@ import Login from '@/components/Login'
 import PostDetail from '@/components/PostDetail'
 import Register from '@/components/Register'
 import Post from '@/components/Post'
+import UserDetail from '@/components/UserDetail'
+import UserDetailComment from '@/components/UserDetailComments'
+import UserDetailWallet from '@/components/UserDetailWallet'
+import UserEdit from '@/components/EditProfile'
+import Ether from '@/components/EtherRegister'
 import Ckeditor from '@ckeditor/ckeditor5-vue'
 import VueSession from 'vue-session'
+import Hot from '@/components/Hot'
 
 Vue.use(Router)
 Vue.use(Ckeditor)
@@ -37,7 +43,7 @@ export default new Router({
       component: Login
     },
     {
-      path: '/register',
+      path: '/register/:ether',
       name: 'register',
       component: Register
     },
@@ -50,6 +56,37 @@ export default new Router({
       path: '/postdetail/:id',
       name: 'postdetail',
       component: PostDetail
+    },
+    {
+      path: '/@/:username',
+      name: 'username',
+      component: UserDetail
+    },
+    {
+      path: '/@/:username/comments',
+      name: 'username',
+      component: UserDetailComment
+    },
+    {
+      path: '/@/:username/wallet',
+      name: 'username',
+      component: UserDetailWallet
+    },
+    {
+      path: '/editprofile/:username',
+      name: 'editprofile',
+      component: UserEdit
+    },
+    {
+      path: '/confirmether',
+      name: 'ether',
+      component: Ether
+    },
+    {
+      path: '/hot',
+      name: 'hot',
+      component: Hot
     }
+
   ]
 })

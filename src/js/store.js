@@ -4,7 +4,9 @@ Vue.use(Vuex)
 
 const userSession = new Vuex.Store({
   state: {
-    username: null
+    username: null,
+    reputation: null,
+    ether: null
   },
   mutations: {
     change (state, nuser) {

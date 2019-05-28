@@ -5,11 +5,13 @@
         <div class='row'>
           <div class='col-md-6 mx-auto'>
             <div class='card rounded-0'>
-              <div class='card-header'></div>
+              <div class="card-header">
+                <h3 id="ether" class="mb-0">Giriş Yap</h3>
+              </div>
               <div class='card-body'>
                 <form id='formLogin' class='form' action method='post' autocomplete='on' novalidate>
                   <div class='form-group'>
-                    <label for='uname1'>Username</label>
+                    <label for='uname1'>Kullanıcı Adı</label>
                     <input
                       type='text'
                       id='uname1'
@@ -18,7 +20,7 @@
                     >
                   </div>
                   <div class='form-group'>
-                    <label for='password'>Password</label>
+                    <label for='password'>Şifre</label>
                     <input
                       type='password'
                       id='pwd1'
@@ -31,7 +33,7 @@
                     class='btn btn-success btn-lg float-right'
                     type='button'
                     @click='controlUser'
-                  >Login</button>
+                  >Giriş yap</button>
                 </form>
               </div>
             </div>
@@ -58,13 +60,13 @@ export default {
       const password = document.getElementById('pwd1')
       return axios
         .get(
-          `http://192.168.1.24:3000/users/${username.value}/${password.value}`
+          `http://localhost:3000/users/${username.value}/${password.value}`
         )
         .then(response => {
           this.data = response.data
           if (this.data.status) {
             localStorage.setItem('user', JSON.stringify(this.data.token))
-            window.location.href = 'http://192.168.1.24:8080/'
+            window.location.href = 'http://localhost:8080/'
           } else alert(this.data.message)
         }).catch(err => {
           if (err) {

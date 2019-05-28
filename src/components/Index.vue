@@ -1,13 +1,17 @@
 <template>
-  <div id="home">
-    <ul class="posts">
-      <li class="mt-5" v-for="item in data">
+  <div class="container">
+    <div class="kapsayici">
+      <div class="left">
+      asdasd
+      </div>
+    <ul class="posts ml-auto">
+      <li class="mt-5" v-for="(item, index) in data">
         <div class="postDetail">
           <div class="postHead">
-            <a v-bind:href="item.id" class="btn">
+            <a v-bind:href="'/#/@/'+ item.user_name" class="btn">
               <img id="senderPic" class="rounded-circle" alt="upvote" src="../assets/logo.png">
             </a>
-            <a v-bind:href="item.id" class="btn" role="button">
+            <a v-bind:href="'/#/@/'+ item.user_name" class="btn" role="button">
               <span class="stronFont">{{item.user_name}}</span>
             </a>
             <!-- <a href class="btn" role="button">
@@ -24,23 +28,25 @@
               <h5>
                 <a v-bind:href="item.id" class="text-secondary font-weight-bold">{{item.title}}</a>
               </h5>
-              <div class="postContentEntry">
+              <div class="postContentEntry" style="font-size:1rem">
                   <a v-bind:href="item.id" class="text-secondary" v-html="item.ipfs_hash">{{item.ipfs_hash}}</a>                    
               </div>
               <div class="postContentFooter d-flex">
                   <div class="vote">
-                      <a href=""><img src="../assets/vote.png" alt=""></a>
-                      <a href="" class="btn font-weight-light">money</a>
-                      <span class="btn font-weight-light">comment</span>
-                      <a href="" class="btn font-weight-light">{{item.vote}}</a>
+                      <span>{{item.money}} ETH |</span>
+                      <span id="countComment">{{countArray[index]}} Yorum |</span>
+                      <span id="voteCount"> {{item.vote}} Oy</span>
                   </div>
               </div>
             </div>
           </div>
         </div>
-      </li>
-      
+      </li>     
     </ul>
+    <div class="right ml-auto">
+      asd
+    </div>
+    </div>
   </div>
 </template>
 
@@ -52,23 +58,33 @@ export default {
   data () {
     return {
       data: null,
-      link: []
+      countArray: [],
+      reputationArray: []
     }
   },
-  mounted () {
-    axios.get('http://192.168.1.24:3000/posts').then(response => {
+  beforeCreate () {
+    axios.get('http://localhost:3000/posts').then(response => {
       // this.data = response.data
-      response.data.forEach((element, index) => {
+      response.data.reverse().forEach((element, index) => {
         ipfs.cat(element.ipfs_hash, (err, file) => {
           if (err) {
             throw err
           }
           const date = new Date()
           const oldDate = new Date(element.time_stamp)
-          response.data[index].ipfs_hash = file.toString('utf8').substring(0, 50)
+          let dt1 = new Date()
+          let dt2 = new Date(oldDate)
+          const difference = Math.abs(Math.floor((Date.UTC(dt2.getFullYear(), dt2.getMonth(), dt2.getDate()) - Date.UTC(dt1.getFullYear(), dt1.getMonth(), dt1.getDate())) / (1000 * 60 * 60 * 24)))
+          if (difference > 7) {
+            axios.post(url)
+          }
+          let url = 'http://localhost:3000/comments/count/' + response.data[index]._id
+          axios.get(url).then(count => {
+            this.countArray.push(count.data.count)
+          })
+          response.data[index].ipfs_hash = file.toString('utf8').substring(0, 60)
           response.data[index].time_stamp = (date.getDate() + 1) - oldDate.getDate()
-          console.log(element.id)
-          response.data[index].id = 'http://localhost:8080/#/postdetail/' + element._id
+          response.data[index].id = '/#/postdetail/' + element._id
           // let newAdress = 'https://ipfs.io/ipfs/' + element.image_ipfs
           ipfs.cat(element.image_ipfs, (err, file) => {
             if (err) {

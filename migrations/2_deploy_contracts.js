@@ -1,5 +1,5 @@
-var Users = artifacts.require("./Users.sol");
+var Social = artifacts.require("../contracts/Social.sol");
 
-export default function(deployer) {
-  deployer.deploy(Users);
+module.exports =  function(deployer) {
+  deployer.deploy(Social);
 };

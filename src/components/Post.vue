@@ -1,5 +1,5 @@
 <template>
-  <div id='post'>
+  <div id='post' class="container" v-if="!login">
     <form v-if="first">
       <div class='form-group'>
         <label for='exampleFormControlInput1'>Title</label>
@@ -48,8 +48,15 @@ export default {
       isLoading: true,
       success: false,
       failed: false,
-      first: true
+      first: true,
+      login: null
     }
+  },
+  beforeCreate () {
+    if (!Store.state.username) {
+      this.login = false
+      window.location.href = 'http://localhost:8080/'
+    } else this.login = true
   },
   mounted () {
     title = document.getElementById('exampleFormControlInput1')
@@ -73,11 +80,11 @@ export default {
                 postHash = hash[0].hash
                 console.log(postHash)
                 let titleValue = title.value
-                Axios.post(`http://192.168.1.24:3000/posts/${Store.state.username}/${postHash}/${imgHash}/${titleValue}`)
+                Axios.post(`http://localhost:3000/posts/${Store.state.username}/${postHash}/${imgHash}/${titleValue}`)
                 .then(response => {
                   const data = response.data
                   if (data.status) {
-                    window.location.href = 'http://192.168.1.24:8080/'
+                    window.location.href = 'http://localhost:8080/'
                   } else {
                     alert('Ups something went wrong!')
                   }
